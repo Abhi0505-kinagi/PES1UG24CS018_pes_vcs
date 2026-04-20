@@ -195,4 +195,10 @@ int object_read(const ObjectID *id, ObjectType *type_out, void **data_out, size_
         free(buffer);
         return -1;
     }
+    char type_str[10];
+    sscanf((char *)buffer, "%s %zu", type_str, len_out);
+
+    if (strcmp(type_str, "blob") == 0) *type_out = OBJ_BLOB;
+    else if (strcmp(type_str, "tree") == 0) *type_out = OBJ_TREE;
+    else *type_out = OBJ_COMMIT;
 }
