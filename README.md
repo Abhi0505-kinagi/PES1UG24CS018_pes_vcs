@@ -107,29 +107,7 @@ Run test cases:
 ---
 
 ## 📸 7. Screenshots (VERY IMPORTANT for marks)
-
-### Build Output
-![alt text](img3.png)
-
-### Repository Initialization
-![alt text](img4.png)
-
-### Adding Files
-![alt text](img5.png)
-
-### Status Output
-![alt text](img10.png)
-![alt text](img6.png)
-
-### Object Storage
-![alt text](img9.png)
-
-### Commit Output
-![alt text](img7.png)
-
-### Log Output
-![alt text](img8.png)
-
+<h1> All screenshots are available in the pdf </h1>
 
 ---
 ```
