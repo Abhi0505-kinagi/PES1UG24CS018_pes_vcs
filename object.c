@@ -116,6 +116,16 @@ int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out
         free(buffer);
         return 0;
     }
+    char path[256];
+    object_path(id_out, path);
+
+    // Create directory
+    char dir[256];
+    snprintf(dir, sizeof(dir), "%.2s", id_out->hash);
+    char full_dir[256];
+    snprintf(full_dir, sizeof(full_dir), ".pes/objects/%s", dir);
+    mkdir(".pes/objects", 0755);
+    mkdir(full_dir, 0755);
 
 }
 
