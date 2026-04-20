@@ -106,34 +106,29 @@ Run test cases:
 
 ## 📸 7. Screenshots (VERY IMPORTANT for marks)
 
-```markdown
 ## Screenshots
 
 ### Build Output
-img3.png
+![Build Output](images/img3.png)
 
 ### Repository Initialization
-img4.png
+![Repository Initialization](images/img4.png)
 
 ### Adding Files
-img5.png
+![Adding Files](images/img5.png)
 
 ### Status Output
-img10.png
-img6.png
+![Status Output](images/img10.png)
+![Status Output](images/img6.png)
 
-###objec storage
-img9.png
+### Object Storage
+![Object Storage](images/img9.png)
 
 ### Commit Output
-img7.png
+![Commit Output](images/img7.png)
 
 ### Log Output
-img8.png
-
-````
-
-👉 Put images inside a folder:
+![Log Output](images/img8.png)
 
 ```
 images/
