@@ -112,6 +112,11 @@ int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out
 
     // 4. Compute hash
     compute_hash(buffer, total_len, id_out);
+    if (object_exists(id_out)) {
+        free(buffer);
+        return 0;
+    }
+
 }
 
 // Read an object from the store.
