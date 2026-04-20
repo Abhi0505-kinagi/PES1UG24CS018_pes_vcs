@@ -108,29 +108,27 @@ Run test cases:
 
 ## 📸 7. Screenshots (VERY IMPORTANT for marks)
 
-## Screenshots
-
 ### Build Output
-![Build Output](img3.png)
+<img src="img3.png" alt="Build Output" width="600">
 
 ### Repository Initialization
-![Repository Initialization](img4.png)
+<img src="img4.png" alt="Repository Initialization" width="600">
 
 ### Adding Files
-![Adding Files](img5.png)
+<img src="img5.png" alt="Adding Files" width="600">
 
 ### Status Output
-![Status Output](img10.png)
-![Status Output](img6.png)
+<img src="img10.png" alt="Status Output" width="600">
+<img src="img6.png" alt="Status Output" width="600">
 
 ### Object Storage
-![Object Storage](img9.png)
+<img src="img9.png" alt="Object Storage" width="600">
 
 ### Commit Output
-![Commit Output](img7.png)
+<img src="img7.png" alt="Commit Output" width="600">
 
 ### Log Output
-![Log Output](img8.png)
+<img src="img8.png" alt="Log Output" width="600">
 
 ---
 ```
