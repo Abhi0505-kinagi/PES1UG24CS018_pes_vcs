@@ -162,4 +162,26 @@ int tree_from_index(ObjectID *id_out) {
             te->hash = e->id;
         }
     }
+    // if subdir exists → write subtree first
+    if (sub_tree.count > 0) {
+        void *data;
+        size_t len;
+
+        if (tree_serialize(&sub_tree, &data, &len) != 0)
+            return -1;
+
+        ObjectID sub_id;
+        if (object_write(OBJ_TREE, data, len, &sub_id) != 0) {
+            free(data);
+            return -1;
+        }
+
+        free(data);
+
+        // add subdir to root
+        TreeEntry *te = &root.entries[root.count++];
+        te->mode = MODE_DIR;
+        strcpy(te->name, subdir_name);
+        te->hash = sub_id;
+    }
 }
