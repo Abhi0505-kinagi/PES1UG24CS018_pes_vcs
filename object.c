@@ -183,4 +183,11 @@ int object_read(const ObjectID *id, ObjectType *type_out, void **data_out, size_
     unsigned char *buffer = malloc(size);
     fread(buffer, 1, size, f);
     fclose(f);
+    ObjectID check_id;
+    compute_hash(buffer, size, &check_id);
+
+    if (memcmp(check_id.hash, id->hash, 32) != 0) {
+        free(buffer);
+        return -1;
+    }
 }
