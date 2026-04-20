@@ -134,7 +134,16 @@ int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out
         free(buffer);
         return -1;
     }
+     // 8. Write
+    write(fd, buffer, total_len);
+    fsync(fd);
+    close(fd);
 
+    // 9. Rename (atomic)
+    rename(temp_path, path);
+
+    free(buffer);
+    return 0;
 
 }
 
