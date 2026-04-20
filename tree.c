@@ -140,4 +140,28 @@ int tree_from_index(ObjectID *id_out) {
     Tree sub_tree;
     sub_tree.count = 0;
     char subdir_name[256] = "";
+    for (int i = 0; i < index.count; i++) {
+        IndexEntry *e = &index.entries[i];
+
+        char *slash = strchr(e->path, '/');
+
+        if (!slash) {
+            // direct file in root
+            TreeEntry *te = &root.entries[root.count++];
+            te->mode = e->mode;
+            strcpy(te->name, e->path);
+            te->hash = e->id;
+        } else {
+            // subdirectory
+            int len = slash - e->path;
+            strncpy(subdir_name, e->path, len);
+            subdir_name[len] = '\0';
+
+            // file inside subdir
+            TreeEntry *te = &sub_tree.entries[sub_tree.count++];
+            te->mode = e->mode;
+            strcpy(te->name, slash + 1);
+            te->hash = e->id;
+        }
+    }
 }
