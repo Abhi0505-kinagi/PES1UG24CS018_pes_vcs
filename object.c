@@ -126,6 +126,15 @@ int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out
     snprintf(full_dir, sizeof(full_dir), ".pes/objects/%s", dir);
     mkdir(".pes/objects", 0755);
     mkdir(full_dir, 0755);
+    char temp_path[300];
+    snprintf(temp_path, sizeof(temp_path), "%s/tmpXXXXXX", full_dir);
+
+    int fd = mkstemp(temp_path);
+    if (fd < 0) {
+        free(buffer);
+        return -1;
+    }
+
 
 }
 
