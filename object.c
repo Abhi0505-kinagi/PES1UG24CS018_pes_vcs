@@ -201,4 +201,10 @@ int object_read(const ObjectID *id, ObjectType *type_out, void **data_out, size_
     if (strcmp(type_str, "blob") == 0) *type_out = OBJ_BLOB;
     else if (strcmp(type_str, "tree") == 0) *type_out = OBJ_TREE;
     else *type_out = OBJ_COMMIT;
+     char *data_start = null_pos + 1;
+    *data_out = malloc(*len_out);
+    memcpy(*data_out, data_start, *len_out);
+
+    free(buffer);
+    return 0;
 }
