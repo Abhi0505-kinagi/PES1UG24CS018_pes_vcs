@@ -156,8 +156,6 @@ int tree_from_index(ObjectID *id_out) {
             int len = slash - e->path;
             strncpy(subdir_name, e->path, len);
             subdir_name[len] = '\0';
-
-            // file inside subdir
             TreeEntry *te = &sub_tree.entries[sub_tree.count++];
             te->mode = e->mode;
             strcpy(te->name, slash + 1);
