@@ -117,7 +117,7 @@ int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out
         return 0;
     }
     char path[256];
-    object_path(id_out, path);
+    object_path(id_out, path, sizeof(path));
 
     // Create directory
     char dir[256];
@@ -135,7 +135,15 @@ int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out
         return -1;
     }
      // 8. Write
-    write(fd, buffer, total_len);
+     size_t written = 0;
+    while (written < total_len) {
+        ssize_t n = write(fd, (char *)buffer + written, total_len - written);
+        if (n <= 0) {
+            close(fd);
+            return -1;
+        }
+        written += n;
+    }
     fsync(fd);
     close(fd);
 
@@ -171,7 +179,7 @@ int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out
 // Returns 0 on success, -1 on error (file not found, corrupt, etc.).
 int object_read(const ObjectID *id, ObjectType *type_out, void **data_out, size_t *len_out) {
     char path[256];
-    object_path(id, path);
+    object_path(id, path, sizeof(path));
 
     FILE *f = fopen(path, "rb");
     if (!f) return -1;
@@ -181,7 +189,11 @@ int object_read(const ObjectID *id, ObjectType *type_out, void **data_out, size_
     rewind(f);
 
     unsigned char *buffer = malloc(size);
-    fread(buffer, 1, size, f);
+    if (fread(buffer, 1, size, f) != size) {
+    fclose(f);
+    free(buffer);
+    return -1;
+    }
     fclose(f);
     ObjectID check_id;
     compute_hash(buffer, size, &check_id);

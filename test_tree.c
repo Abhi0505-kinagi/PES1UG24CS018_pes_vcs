@@ -10,9 +10,7 @@
 #include <string.h>
 #include <assert.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <fcntl.h>
+
 void test_tree_roundtrip(void) {
     // Build a tree manually
     Tree original;

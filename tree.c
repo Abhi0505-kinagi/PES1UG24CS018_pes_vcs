@@ -9,6 +9,8 @@
 // Example single entry (conceptual):
 //   "100644 hello.txt\0" followed by 32 raw bytes of SHA-256
 
+#include "index.h"
+#include "pes.h"
 #include "tree.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,7 +25,7 @@
 #define MODE_DIR       0040000
 
 // ─── PROVIDED ───────────────────────────────────────────────────────────────
-
+int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out);
 // Determine the object mode for a filesystem path.
 uint32_t get_file_mode(const char *path) {
     struct stat st;
@@ -150,7 +152,7 @@ int tree_from_index(ObjectID *id_out) {
             TreeEntry *te = &root.entries[root.count++];
             te->mode = e->mode;
             strcpy(te->name, e->path);
-            te->hash = e->id;
+            te->hash = e->hash;
         } else {
             // subdirectory
             int len = slash - e->path;
@@ -159,7 +161,7 @@ int tree_from_index(ObjectID *id_out) {
             TreeEntry *te = &sub_tree.entries[sub_tree.count++];
             te->mode = e->mode;
             strcpy(te->name, slash + 1);
-            te->hash = e->id;
+            te->hash = e->hash;
         }
     }
     // if subdir exists → write subtree first
