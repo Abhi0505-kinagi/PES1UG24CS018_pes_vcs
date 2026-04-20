@@ -130,8 +130,14 @@ int tree_serialize(const Tree *tree, void **data_out, size_t *len_out) {
 //
 // Returns 0 on success, -1 on error.
 int tree_from_index(ObjectID *id_out) {
-    // TODO: Implement recursive tree building
-    // (See Lab Appendix for logical steps)
-    (void)id_out;
-    return -1;
+    Index index;
+    if (index_load(&index) != 0) return -1;
+
+    Tree root;
+    root.count = 0;
+
+    // temporary storage for subdir (only 1 level)
+    Tree sub_tree;
+    sub_tree.count = 0;
+    char subdir_name[256] = "";
 }
