@@ -231,4 +231,28 @@ int index_add(Index *index, const char *path) {
     }
 
     free(data);
+    struct stat st;
+    if (stat(path, &st) != 0) return -1;
+
+    IndexEntry *e = index_find(index, path);
+
+    if (e) {
+        // update existing
+        e->id = id;
+        e->mtime_sec = st.st_mtime;
+        e->size = st.st_size;
+        e->mode = 100644;
+    } else {
+        // add new
+        IndexEntry new_entry;
+        new_entry.id = id;
+        new_entry.mtime_sec = st.st_mtime;
+        new_entry.size = st.st_size;
+        new_entry.mode = 100644;
+        strcpy(new_entry.path, path);
+
+        index->entries[index->count++] = new_entry;
+    }
+
+    return index_save(index);
 }
