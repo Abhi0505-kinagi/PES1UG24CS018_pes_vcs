@@ -110,21 +110,27 @@ Run test cases:
 ## Screenshots
 
 ### Build Output
-![alt text](image.png)
+img3.png
 
 ### Repository Initialization
-![Init](image2.png)
+img4.png
 
 ### Adding Files
-![Add](image2.png)
+img5.png
 
 ### Status Output
-![Status](images/status.png)
+img10.png
+img6.png
+
+###objec storage
+img9.png
 
 ### Commit Output
-![Commit](image4.png)
+img7.png
+
 ### Log Output
-![Log](images/log.png)
+img8.png
+
 ````
 
 👉 Put images inside a folder:

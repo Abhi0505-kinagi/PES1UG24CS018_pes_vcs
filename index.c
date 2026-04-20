@@ -169,12 +169,12 @@ int index_save(const Index *index) {
 
     return rename(tmp_path, INDEX_FILE);
 }
-
 int index_add(Index *index, const char *path) {
+
     FILE *f = fopen(path, "rb");
     if (!f) {
-        memset(index->entries, 0, sizeof(index->entries));
-        return 0;
+        perror("fopen failed");
+        return -1;
     }
 
     if (fseek(f, 0, SEEK_END) != 0) {
@@ -183,7 +183,7 @@ int index_add(Index *index, const char *path) {
     }
 
     long size = ftell(f);
-    if (size < 0) {
+    if (size <= 0) {
         fclose(f);
         return -1;
     }

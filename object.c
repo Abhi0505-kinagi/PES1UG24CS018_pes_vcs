@@ -98,11 +98,10 @@ int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out
     const char *type_str = (type == OBJ_BLOB) ? "blob" :
                            (type == OBJ_TREE) ? "tree" : "commit";
 
-    // 2. Create header
+    // Create header
     char header[64];
     int header_len = snprintf(header, sizeof(header), "%s %zu", type_str, len);
 
-    // 3. Allocate full buffer
     size_t total_len = header_len + 1 + len;
     unsigned char *buffer = malloc(total_len);
 
@@ -110,51 +109,68 @@ int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out
     buffer[header_len] = '\0';
     memcpy(buffer + header_len + 1, data, len);
 
-    // 4. Compute hash
+    // Compute hash
     compute_hash(buffer, total_len, id_out);
+
     if (object_exists(id_out)) {
         free(buffer);
         return 0;
     }
-    char path[256];
-    object_path(id_out, path, sizeof(path));
 
-    // Create directory
-    char dir[256];
-    snprintf(dir, sizeof(dir), "%.2s", id_out->hash);
-    char full_dir[256];
-    snprintf(full_dir, sizeof(full_dir), ".pes/objects/%s", dir);
-    mkdir(".pes/objects", 0755);
-    mkdir(full_dir, 0755);
+    char hex[HASH_HEX_SIZE + 1];
+    hash_to_hex(id_out, hex);
+
+    char dir_path[256];
+    snprintf(dir_path, sizeof(dir_path), "%s/%.2s", OBJECTS_DIR, hex);
+
+    char file_path[256];
+    snprintf(file_path, sizeof(file_path), "%s/%s", dir_path, hex + 2);
+
+    // Create directories
+    mkdir(PES_DIR, 0755);
+    mkdir(OBJECTS_DIR, 0755);
+    mkdir(dir_path, 0755);
+
+    // Temp file
     char temp_path[300];
-    snprintf(temp_path, sizeof(temp_path), "%s/tmpXXXXXX", full_dir);
+    snprintf(temp_path, sizeof(temp_path), "%s/tmpXXXXXX", dir_path);
 
     int fd = mkstemp(temp_path);
     if (fd < 0) {
         free(buffer);
         return -1;
     }
-     // 8. Write
-     size_t written = 0;
+
+    // Write safely
+    size_t written = 0;
     while (written < total_len) {
-        ssize_t n = write(fd, (char *)buffer + written, total_len - written);
+        ssize_t n = write(fd, buffer + written, total_len - written);
         if (n <= 0) {
             close(fd);
+            free(buffer);
             return -1;
         }
         written += n;
     }
+
     fsync(fd);
     close(fd);
 
-    // 9. Rename (atomic)
-    rename(temp_path, path);
+    // Atomic rename
+    if (rename(temp_path, file_path) != 0) {
+        free(buffer);
+        return -1;
+    }
+    // After rename(), add:
+    int dir_fd = open(dir_path, O_RDONLY);
+    if (dir_fd >= 0) {
+        fsync(dir_fd);
+        close(dir_fd);
+    }
 
     free(buffer);
     return 0;
-
 }
-
 // Read an object from the store.
 //
 // Steps:
@@ -208,7 +224,9 @@ int object_read(const ObjectID *id, ObjectType *type_out, void **data_out, size_
         return -1;
     }
     char type_str[10];
-    sscanf((char *)buffer, "%s %zu", type_str, len_out);
+    size_t parsed_len = 0;
+    sscanf((char *)buffer, "%9s %zu", type_str, &parsed_len);
+    *len_out = parsed_len;
 
     if (strcmp(type_str, "blob") == 0) *type_out = OBJ_BLOB;
     else if (strcmp(type_str, "tree") == 0) *type_out = OBJ_TREE;
